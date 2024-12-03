@@ -1,4 +1,4 @@
-<!-- Der Titel des Projekts muss im Feld Title angegeben werden -->
+# Shock Clock
 
 ## Beschreibung
 
@@ -10,28 +10,21 @@
 
 ## Team-Informationen
 
-Name des Teams:
+Name des Teams: 
 
-<!-- Ansprechpartner -->
-
-Teamleiter:
-
-<!-- Auflistung aller Teammitglieder inkl. Klasse -->
+Teamleiter: Vincent Winkler
 
 Teammitglieder:
 
-* Max Mustermann (3AHIF)
-* John Doe  (3BHIF)
+* Vincent Winkler (3BHIF)
+* Jason Puschnig (3BHIF)
 
 ## Eingesetzte Technologien
 
-<!-- Technologien angeben... einige Beispiele wären -->
-
-* Java
-* JavaScript
-* MongoDB
-* MySQL
-* etc...
+* Rust (Tauri + Leptos)
+* Arduino C
+* Kotlin
+* Sqlite
 
 /label ~state::submitted
 
