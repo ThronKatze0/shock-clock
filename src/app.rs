@@ -20,6 +20,9 @@ pub fn App() -> impl IntoView {
     provide_context(RouteSetter(set_selected_route));
 
     mview! {
+        button()
+        button()
+        button()
         {match selected_route() {
             SelectedRoute::Home => mview! {"Home"},
             SelectedRoute::Devices => mview! {"Devices"},
@@ -29,6 +32,8 @@ pub fn App() -> impl IntoView {
             BtmNavItem text={"Home"} icon={i::AiHomeOutlined}()
             BtmNavItem text={"Devices"} icon={i::BiDevicesRegular}()
             BtmNavItem text={"Alarm"} icon={i::ChClockAlarm}()
+            button()
+            button()
         }
     }
 }
@@ -37,6 +42,6 @@ pub fn App() -> impl IntoView {
 fn BtmNavItem(text: &'static str, icon: &'static IconData) -> impl IntoView {
     let ssr = use_context::<RouteSetter>().unwrap();
     mview! {
-        button onclick=[ssr.0] class="text-primary" { Icon icon={icon}() span class="btm-nav-label"({text})}
+        // button onclick=[ssr.0] class="text-primary" { Icon icon={icon}() span class="btm-nav-label"({text})}
     }
 }
