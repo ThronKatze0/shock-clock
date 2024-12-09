@@ -19,19 +19,19 @@
         config.android_sdk.accept_license = true;
       };
 
-      android_sdk =
+      android_composition =
         (pkgs.androidenv.composeAndroidPackages {
           platformVersions = ["34"];
           ndkVersions = ["26.3.11579264"];
+	  buildToolsVersions = [ "34.0.0" ];
           includeNDK = true;
           useGoogleAPIs = false;
           useGoogleTVAddOns = false;
-          includeEmulator = false;
+          includeEmulator = true;
           includeSystemImages = false;
-          includeSources = false;
-        })
-        .androidsdk;
-
+          includeSources = true;
+        });
+      
       packages = with pkgs; [
         curl
         wget
@@ -39,10 +39,7 @@
 	trunk
 
         nodejs_20
-        typescript-language-server
-
 	tailwindcss
-	# nodePackages.daisyui
 
         (with fenix.packages.${system};
           combine [
@@ -57,7 +54,7 @@
           ])
         rust-analyzer
 
-        android_sdk
+        android_composition.androidsdk
         jdk
       ];
 
@@ -73,14 +70,18 @@
         librsvg
       ];
     in {
-      devShell = pkgs.mkShell {
+      devShell = pkgs.mkShell rec {
         buildInputs = packages ++ libraries;
 
-        LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath libraries}:$LD_LIBRARY_PATH";
-        XDG_DATA_DIRS = "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}:$XDG_DATA_DIRS";
-        ANDROID_HOME = "${android_sdk}/libexec/android-sdk";
-        NDK_HOME = "${android_sdk}/libexec/android-sdk/ndk/26.3.11579264";
-        GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${android_sdk}/libexec/android-sdk/build-tools/34.0.0/aapt2";
+	shellHook = ''
+	  fish
+	'';
+
+        NIX_LD = "${pkgs.stdenv.cc.libc}/lib/ld-linux-x86-64.so.2";
+        ANDROID_HOME = "${android_composition.androidsdk}/libexec/android-sdk";
+        NDK_HOME = "${android_composition.androidsdk}/libexec/android-sdk/ndk/${builtins.head (pkgs.lib.lists.reverseList (builtins.split "-" "${android_composition.ndk-bundle}"))}";
+        ANDROID_SDK_ROOT = "${android_composition.androidsdk}/libexec/android-sdk";
+        ANDROID_NDK_ROOT = "${android_composition.androidsdk}/libexec/android-sdk/ndk-bundle";
       };
     });
 }
