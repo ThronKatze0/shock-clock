@@ -1,3 +1,4 @@
+use shock_clock_ui::components::Home;
 use std::fmt::Display;
 
 use icondata as i;
@@ -6,7 +7,7 @@ use leptos::*;
 use leptos_icons::*;
 use leptos_mview::mview;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Copy)]
 enum SelectedRoute {
     Home,
     Devices,
@@ -28,16 +29,20 @@ impl Display for SelectedRoute {
 }
 
 #[derive(Clone)]
-struct RouteSetter(WriteSignal<SelectedRoute>);
+struct Route(RwSignal<SelectedRoute>);
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (selected_route, set_selected_route) = create_signal(SelectedRoute::Home);
-    provide_context(RouteSetter(set_selected_route));
+    let selected_route = RwSignal::new(SelectedRoute::Home);
+    provide_context(Route(selected_route));
 
     mview! {
         {move || selected_route().to_string()}
-        div class="btm-nav" {
+        // {move || match selected_route() {
+        //     SelectedRoute::Home => mview! {Home;},
+        //     _ => todo!()
+        // }}
+        div class="btm-nav btm-nav-sm" {
             BtmNavItem route={SelectedRoute::Home} icon={i::AiHomeOutlined}()
             BtmNavItem route={SelectedRoute::Devices} icon={i::BiDevicesRegular}()
             BtmNavItem route={SelectedRoute::Alarm} icon={i::ChClockAlarm}()
@@ -47,10 +52,13 @@ pub fn App() -> impl IntoView {
 
 #[component]
 fn BtmNavItem(route: SelectedRoute, icon: &'static IconData) -> impl IntoView {
-    let ssr = use_context::<RouteSetter>().unwrap();
+    let ssr = use_context::<Route>().unwrap().0;
     let moved_route = route.clone(); // no idea why it wants two copies, with normal view! I only
                                      // need one
     mview! {
-        button on:click={move |_| ssr.0(moved_route.clone())} class="text-primary" { Icon icon={icon}() span class="btm-nav-label"({route.to_string()})}
+        button on:click={move |_| ssr.set(moved_route.clone())} class={move || format!("text-primary {}", if moved_route == ssr.get() {"active"} else {""})} {
+            Icon icon={icon}()
+            span class="btm-nav-label"({route.to_string()})
+        }
     }
 }
