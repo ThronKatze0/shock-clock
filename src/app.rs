@@ -1,4 +1,4 @@
-use shock_clock_ui::components::Home;
+//use shock_clock_ui::components::Home;
 use std::fmt::Display;
 
 use icondata as i;
@@ -38,6 +38,7 @@ pub fn App() -> impl IntoView {
 
     mview! {
         {move || selected_route().to_string()}
+        button class="btn" {"Seas"}
         // {move || match selected_route() {
         //     SelectedRoute::Home => mview! {Home;},
         //     _ => todo!()
