@@ -9,9 +9,9 @@ use leptos_mview::mview;
 
 #[derive(Clone, PartialEq, Copy)]
 enum SelectedRoute {
+    Watcher,
     Home,
-    Devices,
-    Alarm,
+    Games, // maybe change to settings later
 }
 
 impl Display for SelectedRoute {
@@ -20,9 +20,9 @@ impl Display for SelectedRoute {
             f,
             "{}",
             match self {
-                Self::Alarm => "Alarm",
-                Self::Devices => "Devices",
+                Self::Watcher => "Watcher",
                 Self::Home => "Home",
+                Self::Games => "Games",
             }
         )
     }
@@ -38,15 +38,15 @@ pub fn App() -> impl IntoView {
 
     mview! {
         {move || selected_route().to_string()}
-        button class="btn" {"Seas"}
+        button class="btn"("Halil")
         // {move || match selected_route() {
         //     SelectedRoute::Home => mview! {Home;},
         //     _ => todo!()
         // }}
-        div class="btm-nav btm-nav-sm" {
+        div class="btm-nav btm-nav-sm h-[10%]" {
+            BtmNavItem route={SelectedRoute::Watcher} icon={i::AiMonitorOutlined}()
             BtmNavItem route={SelectedRoute::Home} icon={i::AiHomeOutlined}()
-            BtmNavItem route={SelectedRoute::Devices} icon={i::BiDevicesRegular}()
-            BtmNavItem route={SelectedRoute::Alarm} icon={i::ChClockAlarm}()
+            BtmNavItem route={SelectedRoute::Games} icon={i::CgGames}()
         }
     }
 }
@@ -57,7 +57,7 @@ fn BtmNavItem(route: SelectedRoute, icon: &'static IconData) -> impl IntoView {
     let moved_route = route.clone(); // no idea why it wants two copies, with normal view! I only
                                      // need one
     mview! {
-        button on:click={move |_| ssr.set(moved_route.clone())} class={move || format!("text-primary {}", if moved_route == ssr.get() {"active"} else {""})} {
+        button on:click={move |_| ssr.set(moved_route.clone())} class={move || format!("text-primary text-4xl {}", if moved_route == ssr.get() {"active"} else {""})} {
             Icon icon={icon}()
             span class="btm-nav-label"({route.to_string()})
         }
