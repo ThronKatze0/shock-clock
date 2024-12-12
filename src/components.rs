@@ -29,10 +29,9 @@ pub fn Home() -> impl IntoView {
     }
 }
 
-#[component]
-pub fn Watcher() -> impl IntoView {
-    mview! {}
-}
+pub mod watcher;
+
+pub use watcher::Watcher;
 
 #[component]
 pub fn Games() -> impl IntoView {
