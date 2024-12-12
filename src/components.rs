@@ -19,10 +19,11 @@ pub fn Home() -> impl IntoView {
 
                 div class="flex flex-auto h-1/16 py-48" {
                     div class="flex-1";
-                    button class="btn center text-6xl rounded-full flex-auto h-4/6 w-1/12 border-white border-4" {"⚡"}
+                    button class="btn center text-6xl rounded-full flex-auto h-4/6 w-1/12 border-yellow-500 border-4" {"⚡"}
                     div class="flex-1";
                 }
-                div class="flex-1";
+                div class="flex-1" {
+                }
             }
         }
     }
