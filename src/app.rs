@@ -39,9 +39,9 @@ pub fn App() -> impl IntoView {
 
     mview! {
         {move || match selected_route() {
-            SelectedRoute::Home => mview! {Home},
-            SelectedRoute::Watcher => mview! {Watcher},
-            SelectedRoute::Games => mview! {Games}
+            SelectedRoute::Home => mview! {Home()},
+            SelectedRoute::Watcher => mview! {Watcher()},
+            SelectedRoute::Games => mview! {Games()}
         }}
         div class="btm-nav btm-nav-sm h-[10%]" {
             BtmNavItem route={SelectedRoute::Watcher} icon={i::AiMonitorOutlined}()
