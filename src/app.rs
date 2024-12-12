@@ -39,9 +39,9 @@ pub fn App() -> impl IntoView {
 
     mview! {
         {move || match selected_route() {
-            SelectedRoute::Home => mview! {Home;},
-            SelectedRoute::Watcher => mview! {Watcher;},
-            SelectedRoute::Games => mview! {Games;}
+            SelectedRoute::Home => mview! {Home},
+            SelectedRoute::Watcher => mview! {Watcher},
+            SelectedRoute::Games => mview! {Games}
         }}
         div class="btm-nav btm-nav-sm h-[10%]" {
             BtmNavItem route={SelectedRoute::Watcher} icon={i::AiMonitorOutlined}()
@@ -57,7 +57,7 @@ fn BtmNavItem(route: SelectedRoute, icon: &'static IconData) -> impl IntoView {
     let moved_route = route.clone(); // no idea why it wants two copies, with normal view! I only
                                      // need one
     mview! {
-        button on:click={move |_| ssr.set(moved_route.clone())} class={move || format!("text-primary text-4xl {}", if moved_route == ssr.get() {"active"} else {""})} {
+        button on:click={move |_| ssr.set(moved_route.clone())} class={move || format!("text-secondary text-4xl {}", if moved_route == ssr.get() {"active"} else {""})} {
             Icon icon={icon}()
             span class="btm-nav-label"({route.to_string()})
         }
