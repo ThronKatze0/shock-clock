@@ -6,6 +6,7 @@ use icondata_core::IconData;
 use leptos::*;
 use leptos_icons::*;
 use leptos_mview::mview;
+use shock_clock_ui::components::{Games, Home, Watcher};
 
 #[derive(Clone, PartialEq, Copy)]
 enum SelectedRoute {
@@ -37,12 +38,11 @@ pub fn App() -> impl IntoView {
     provide_context(Route(selected_route));
 
     mview! {
-        {move || selected_route().to_string()}
-        button class="btn"("Halil")
-        // {move || match selected_route() {
-        //     SelectedRoute::Home => mview! {Home;},
-        //     _ => todo!()
-        // }}
+        {move || match selected_route() {
+            SelectedRoute::Home => mview! {Home;},
+            SelectedRoute::Watcher => mview! {Watcher;},
+            SelectedRoute::Games => mview! {Games;}
+        }}
         div class="btm-nav btm-nav-sm h-[10%]" {
             BtmNavItem route={SelectedRoute::Watcher} icon={i::AiMonitorOutlined}()
             BtmNavItem route={SelectedRoute::Home} icon={i::AiHomeOutlined}()
