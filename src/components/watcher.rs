@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Display;
 use std::fmt::Formatter;
 
@@ -7,6 +8,8 @@ use leptos::IntoView;
 use leptos::ReadSignal;
 use leptos::SignalGet;
 use leptos_mview::mview;
+use serde::{Deserialize, Serialize};
+use shock_clock_utils::Block;
 
 #[derive(Clone, PartialEq)]
 enum WatcherRoute {
@@ -60,17 +63,19 @@ pub fn Watcher() -> impl IntoView {
         }
 
         div class="join flex m-5" {
-            input class="btn join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::App)} type="radio" name="blockType" aria-label="App" checked={move || block_type() == BlockTypeRoute::App}()
-            input class="btn join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Website)} type="radio" name="blockType" aria-label="Website" checked={move || block_type() == BlockTypeRoute::Website}()
-            input class="btn join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Keyword)} type="radio" name="blockType" aria-label="Keyword" checked={move || block_type() == BlockTypeRoute::Keyword}()
+            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::App)} type="radio" name="blockType" aria-label="App" checked={move || block_type() == BlockTypeRoute::App}()
+            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Website)} type="radio" name="blockType" aria-label="Website" checked={move || block_type() == BlockTypeRoute::Website}()
+            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Keyword)} type="radio" name="blockType" aria-label="Keyword" checked={move || block_type() == BlockTypeRoute::Keyword}()
         }
-
-        // div class="join flex" {
-        //     input class={move || get_classes(route, )} on:click={move |_| set_route(WatcherRoute::Blacklist)} type="radio" name="options" aria-label="Blocklist" checked()
-        //     input class={move || get_classes(route, WatcherRoute::Whitelist)} on:click={move |_| set_route(WatcherRoute::Blacklist)} type="radio" name="options" aria-label="Whitelist"()
-        // }
 
         p({move || log()})
 
+        div class="flex flex-col" {
+
+        }
+
     }
 }
+
+// #[component]
+// fn BlockElement(block: Block) -> impl IntoView {}
