@@ -19,7 +19,8 @@ pub fn run() {
             watcher_state::update_blocklist,
             greet,
             ble::shock,
-            ble::is_connected
+            ble::is_connected,
+            watcher_state::update_blocklist
         ])
         .setup(|app| {
             app.manage(Mutex::new(Vec::<shock_clock_utils::Block>::new()));
