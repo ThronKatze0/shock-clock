@@ -8,11 +8,12 @@ use leptos::IntoView;
 use leptos::ReadSignal;
 use leptos::Signal;
 use leptos::SignalGet;
+use leptos::WriteSignal;
 use leptos_mview::mview;
 use serde::{Deserialize, Serialize};
 use shock_clock_utils::Block;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 enum WatcherRoute {
     Blacklist,
     Whitelist,
@@ -27,7 +28,7 @@ impl Display for WatcherRoute {
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 enum BlockTypeRoute {
     App,
     Website,
@@ -63,14 +64,14 @@ pub fn Watcher() -> impl IntoView {
 
     mview! {
         div class="join flex m-5" {
-            input class="btn join-item flex-1 rounded-l-lg" on:click={move |_| set_route(WatcherRoute::Blacklist)} type="radio" name="watcherRoute" aria-label="Blocklist" checked={move || route() == WatcherRoute::Blacklist}()
-            input class="btn join-item flex-1 rounded-l-lg" on:click={move |_| set_route(WatcherRoute::Whitelist)} type="radio" name="watcherRoute" aria-label="Whitelist" checked={move || route() == WatcherRoute::Whitelist}()
+            RadioOption value={WatcherRoute::Blacklist} set_signal={set_route} route={route} btn_size=""()
+            RadioOption value={WatcherRoute::Whitelist} set_signal={set_route} route={route} btn_size=""()
         }
 
         div class="join flex m-5" {
-            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::App)} type="radio" name="blockType" aria-label="App" checked={move || block_type() == BlockTypeRoute::App}()
-            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Website)} type="radio" name="blockType" aria-label="Website" checked={move || block_type() == BlockTypeRoute::Website}()
-            input class="btn btn-sm join-item flex-1 rounded-l-lg" on:click={move |_| set_block_type(BlockTypeRoute::Keyword)} type="radio" name="blockType" aria-label="Keyword" checked={move || block_type() == BlockTypeRoute::Keyword}()
+            RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
+            RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
+            RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
         }
 
         p({move || log()})
@@ -81,6 +82,22 @@ pub fn Watcher() -> impl IntoView {
 
     }
 }
+
+#[component]
+fn RadioOption<T>(
+    value: T,
+    set_signal: WriteSignal<T>,
+    route: ReadSignal<T>,
+    btn_size: &'static str,
+) -> impl IntoView
+where
+    T: Clone + Copy + PartialEq + Display + 'static,
+{
+    mview! {
+        input class={move || format!("btn {} join-item flex-1 rounded-l-lg", btn_size)} on:click={move |_| set_signal(value)} type="radio" name="watcherRoute" aria-label={move || value.to_string()} checked={move || route() == value}()
+    }
+}
+
 //
 // #[component]
 // fn BlockElement(block: Block) -> impl IntoView {
