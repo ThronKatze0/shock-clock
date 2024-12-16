@@ -3,6 +3,7 @@ use leptos::on_cleanup;
 use leptos::set_interval_with_handle;
 use leptos::Signal;
 use leptos::WriteSignal;
+use shock_clock_utils::ble::IsConnected;
 use std::time::Duration;
 
 use icondata as i;
@@ -13,7 +14,7 @@ use leptos_icons::Icon;
 use leptos_mview::mview;
 
 use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
+use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 
 #[derive(Serialize, Deserialize)]
@@ -35,12 +36,10 @@ extern "C" {
 }
 
 async fn update_clock_stat(set_clock_stat: WriteSignal<bool>) {
-    set_clock_stat(
-        invoke_without_args("ble::is_connected")
-            .await
-            .as_bool()
-            .unwrap(),
-    );
+    let is_connected: IsConnected =
+        from_value(invoke_without_args("is_connected").await).expect("JsValue(null)");
+
+    set_clock_stat(is_connected.0);
 }
 
 #[derive(Serialize, Deserialize)]

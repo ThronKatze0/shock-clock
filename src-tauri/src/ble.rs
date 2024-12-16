@@ -1,4 +1,4 @@
-use serde::Serialize;
+use shock_clock_utils::ble::IsConnected;
 use tauri::async_runtime;
 use tokio::sync::mpsc;
 use uuid::{uuid, Uuid};
@@ -45,9 +45,6 @@ pub fn shock(duration: u16) {
         }
     });
 }
-
-#[derive(Serialize)]
-pub struct IsConnected(bool);
 
 #[tauri::command]
 pub fn is_connected() -> IsConnected {
