@@ -1,3 +1,4 @@
+use serde::Serialize;
 use tauri::async_runtime;
 use tokio::sync::mpsc;
 use uuid::{uuid, Uuid};
@@ -28,8 +29,9 @@ async fn scan() {
     }
 }
 
+// FIXME: this doesn't work anymore if it returns anything :c
 #[tauri::command]
-pub fn shock(duration: u16) -> Result<(), ()> {
+pub fn shock(duration: u16) {
     let mut res = Err(());
     async_runtime::block_on(async {
         let mut handler = tauri_plugin_blec::get_handler().unwrap().lock().await;
@@ -42,12 +44,15 @@ pub fn shock(duration: u16) -> Result<(), ()> {
             res = Ok(());
         }
     });
-    res
 }
 
+#[derive(Serialize)]
+pub struct IsConnected(bool);
+
 #[tauri::command]
-pub fn is_connected() -> bool {
+pub fn is_connected() -> IsConnected {
     let mut res = false;
+    println!("Seeing if device is connected...");
     async_runtime::block_on(async {
         let handler = tauri_plugin_blec::get_handler().unwrap();
         res = handler.lock().await.is_connected();
@@ -56,5 +61,5 @@ pub fn is_connected() -> bool {
             res = handler.lock().await.is_connected();
         }
     });
-    res
+    IsConnected(res)
 }

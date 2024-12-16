@@ -11,8 +11,12 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_blec::init())
-        .invoke_handler(tauri::generate_handler![ble::is_connected])
-        .invoke_handler(tauri::generate_handler![ble::shock])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            ble::shock,
+            ble::is_connected
+        ])
+        // .invoke_handler(tauri::generate_handler![ble::shock])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
