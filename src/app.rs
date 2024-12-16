@@ -1,3 +1,5 @@
+// Orthographietrainer Password: 4172
+
 //use shock_clock_ui::components::Home;
 use std::fmt::Display;
 

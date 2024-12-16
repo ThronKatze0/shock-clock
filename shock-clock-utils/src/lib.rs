@@ -1,34 +1,38 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub enum Block {
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Block {
+    id: usize,
+    name: String,
+    shock_strength: ShockStrength,
+    block_type: BlockType,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+enum BlockType {
     App(AppBlockData),
     Website(WebsiteBlockData),
     Keyword(KeywordBlockData),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum ShockStrength {
     Normal,
     Hard,
     Ultra,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct AppBlockData {
-    app_name: String,
-    package_name: String,
-    shock_strength: ShockStrength,
+    pub package_name: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct WebsiteBlockData {
-    url: String,
-    shock_strength: ShockStrength,
+    pub url: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct KeywordBlockData {
-    name: String,
-    shock_strength: ShockStrength,
+    pub name: String,
 }

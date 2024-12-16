@@ -6,6 +6,7 @@ use leptos::component;
 use leptos::create_signal;
 use leptos::IntoView;
 use leptos::ReadSignal;
+use leptos::Signal;
 use leptos::SignalGet;
 use leptos_mview::mview;
 use serde::{Deserialize, Serialize};
@@ -48,6 +49,10 @@ pub fn Watcher() -> impl IntoView {
     let (route, set_route) = create_signal(WatcherRoute::Blacklist);
     let (block_type, set_block_type) = create_signal(BlockTypeRoute::App);
 
+    let blocks: Vec<Block> = Vec::new();
+
+    let update_backend = Signal::derive(|| {});
+
     let log = move || {
         format!(
             "WatcherRoute: {}\nBlockTypeRoute: {}\n\n",
@@ -76,6 +81,24 @@ pub fn Watcher() -> impl IntoView {
 
     }
 }
-
+//
 // #[component]
-// fn BlockElement(block: Block) -> impl IntoView {}
+// fn BlockElement(block: Block) -> impl IntoView {
+//     mview! {
+//         div class="card" {
+//             div class="card-body flex flex-row" {
+//                 h2({move || match block.clone() {
+//                     Block::App(data) => data.app_name,
+//                     Block::Website(data) => data.url,
+//                     Block::Keyword(data) => data.name,
+//                 }})
+//
+//                 div class="dropdown dropdown-top" {
+//                     div tabindex="0" role="button" class="btn" {
+//
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
