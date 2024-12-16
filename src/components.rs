@@ -1,13 +1,13 @@
+use leptos::logging;
 use leptos::on_cleanup;
 use leptos::set_interval_with_handle;
 use leptos::Signal;
+use leptos::WriteSignal;
 use std::time::Duration;
 
 use icondata as i;
-use icondata::Icon;
 use leptos::component;
 use leptos::create_signal;
-use leptos::set_interval;
 use leptos::IntoView;
 use leptos_icons::Icon;
 use leptos_mview::mview;
@@ -23,41 +23,52 @@ struct ShockArgs {
 
 #[wasm_bindgen]
 extern "C" {
+    // invoke without arguments
+    #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "core"], js_name = invoke)]
+    async fn invoke_without_args(cmd: &str) -> JsValue;
+
+    // invoke with arguments (default)
     #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "core"])]
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
+
+    // They need to have different names!
 }
 
-enum Status {
-    Offline,
-    Online,
+async fn update_clock_stat(set_clock_stat: WriteSignal<bool>) {
+    set_clock_stat(
+        invoke_without_args("ble::is_connected")
+            .await
+            .as_bool()
+            .unwrap(),
+    );
+}
+
+#[derive(Serialize, Deserialize)]
+struct GreetArgs<'a> {
+    name: &'a str,
 }
 
 #[component]
 pub fn Home() -> impl IntoView {
     let shock_test = move |_| {
         spawn_local((async move || {
+            logging::log!("shocking...?");
             let args = to_value(&ShockArgs { duration: 1000 }).unwrap();
-            invoke("shock", args).await;
+            logging::log!("args seems good...");
+            logging::log!("greet works...");
+            let res = invoke("shock", args).await;
+            println!("{res:?}");
         })());
     };
     let (clock_stat, set_clock_stat) = create_signal(false);
     let handle = set_interval_with_handle(
         move || {
-            let stat_clone = set_clock_stat.clone();
-            let async_closure = async move || {
-                stat_clone(
-                    invoke("is_connected", JsValue::undefined())
-                        .await
-                        .as_bool()
-                        .unwrap(),
-                );
-            };
-            spawn_local(async_closure());
+            spawn_local(update_clock_stat(set_clock_stat));
         },
         Duration::from_secs(5),
     );
     on_cleanup(move || {
-        handle;
+        drop(handle);
     });
     let get_icon = move || {
         if clock_stat() {
@@ -73,6 +84,7 @@ pub fn Home() -> impl IntoView {
                 div class="stats" {
                     div class="stat" {
                         span class="stat-title" { "Watcher" }
+                        Icon icon={i::AiCloseOutlined};
                     }
                     div class="stat" {
                         span class="stat-title" { "Clock" }
