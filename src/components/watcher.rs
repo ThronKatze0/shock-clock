@@ -4,7 +4,6 @@ use shock_clock_utils::AppBlockData;
 use shock_clock_utils::BlockType;
 use shock_clock_utils::ShockStrength;
 use shock_clock_utils::WebsiteBlockData;
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use uuid;
@@ -64,6 +63,7 @@ impl Display for WatcherRoute {
 
 #[derive(Clone, Copy, PartialEq)]
 enum BlockTypeRoute {
+    All,
     App,
     Website,
     Keyword,
@@ -72,6 +72,7 @@ enum BlockTypeRoute {
 impl Display for BlockTypeRoute {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         match self {
+            BlockTypeRoute::All => write!(f, "All"),
             BlockTypeRoute::App => write!(f, "App"),
             BlockTypeRoute::Website => write!(f, "Website"),
             BlockTypeRoute::Keyword => write!(f, "Keyword"),
@@ -82,9 +83,34 @@ impl Display for BlockTypeRoute {
 #[component]
 pub fn Watcher() -> impl IntoView {
     let (route, set_route) = create_signal(WatcherRoute::Blacklist);
-    let (block_type, set_block_type) = create_signal(BlockTypeRoute::App);
+    let (block_type, set_block_type) = create_signal(BlockTypeRoute::All);
 
     let (blocks, set_blocks) = create_signal(Vec::new());
+
+    let filtered_blocks = move || match block_type() {
+        BlockTypeRoute::All => blocks(),
+        BlockTypeRoute::App => blocks()
+            .into_iter()
+            .filter(|block: &Block| match block.block_type {
+                BlockType::App(_) => true,
+                _ => false,
+            })
+            .collect(),
+        BlockTypeRoute::Website => blocks()
+            .into_iter()
+            .filter(|block: &Block| match block.block_type {
+                BlockType::Website(_) => true,
+                _ => false,
+            })
+            .collect(),
+        BlockTypeRoute::Keyword => blocks()
+            .into_iter()
+            .filter(|block: &Block| match block.block_type {
+                BlockType::Keyword => true,
+                _ => false,
+            })
+            .collect(),
+    };
 
     let add_block = move |block: Block| set_blocks.update(|blocks| blocks.push(block));
 
@@ -149,6 +175,7 @@ pub fn Watcher() -> impl IntoView {
             }
 
             div class="join flex mx-5 mt-3" {
+                RadioOption value={BlockTypeRoute::All} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
                 RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
                 RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
                 RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
@@ -170,7 +197,7 @@ pub fn Watcher() -> impl IntoView {
         div class="overflow-y-auto pb-20" {
             ul class="divide-y divide-gray-200" {
                 For
-                    each={move || blocks.get()}
+                    each={move || filtered_blocks()}
                     key={|block| block.uuid}
                     children={move |block| mview! {
                         BlockElement {block}()
@@ -203,39 +230,27 @@ where
     }
 }
 
-// #[component]
-// fn BlockElement(block: Block) -> impl IntoView {
-//     mview! {
-//         div class="card bg-neutral shadow-xl mx-5 mt-3" {
-//             div class="card-body" {
-//                 div class="flex flex-row text-4xl" {
-//                     h2 class="card-title text-4xl"({block.name})
-//                     {match &block.block_type {
-//                         BlockType::App(_) => mview!{ Icon width="3em" height="2em" icon={i::AiAppstoreOutlined}() },
-//                         BlockType::Website(_) => mview!{ Icon width="3em" height="2em" icon={i::MdiWeb}() },
-//                         BlockType::Keyword => mview!{ Icon width="3em" height="2em" icon={i::BsCardText}() }
-//                     }}
-//                 }
-//                 p {{move || match &block.block_type {
-//                         BlockType::App(ref app_data) => app_data.package_name.clone(),
-//                         BlockType::Website(ref website_data) => website_data.url.clone(),
-//                         _ => "".to_string()
-//                     }}}
-//                 div class="card-actions justify-end" {
-//                     button class="btn btn-primary" ("Buy now")
-//                 }
-//             }
-//         }
-//     }
-// }
-//
 #[component]
 fn BlockElement(block: Block) -> impl IntoView {
     mview! {
         li class="flex items-center justify-between p-4" {
-            div class="flex items-center space-x-3" {
-                Icon width="3em" height="2em" icon={i::AiAppstoreOutlined}()
-                span class="text-primary font-medium"({block.name})
+            div class="flex items-start space-x-3" {
+                {match &block.block_type {
+                    BlockType::App(_) => mview!{ Icon width="3em" height="3em" icon={i::AiAppstoreOutlined}() },
+                    BlockType::Website(_) => mview!{ Icon width="3em" height="3em" icon={i::MdiWeb}() },
+                    BlockType::Keyword => mview!{ Icon width="3em" height="3em" icon={i::BsCardText}() }
+                }}
+                div {
+                    span class="text-white text-2xl"({block.name})
+                    p class="text-sm text-gray-400"({move || match &block.block_type {
+                        BlockType::App(ref app_data) => app_data.package_name.clone(),
+                        BlockType::Website(ref website_data) => website_data.url.clone(),
+                        _ => "".to_string()
+                    }})
+                }
+            }
+            button class="btn btn-secondary" {
+                Icon width="2em" height="2em" icon={i::BsTrash}()
             }
         }
     }
