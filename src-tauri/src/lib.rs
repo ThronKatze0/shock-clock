@@ -15,17 +15,17 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_blec::init())
+        .setup(|app| {
+            app.manage(Mutex::new(Vec::<shock_clock_utils::Block>::new()));
+            app.manage(Mutex::new(Option::<String>::None));
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             watcher_state::update_blocklist,
             greet,
             ble::shock,
             ble::is_connected
         ])
-        .setup(|app| {
-            app.manage(Mutex::new(Vec::<shock_clock_utils::Block>::new()));
-            app.manage(Mutex::new(Option::<String>::None));
-            Ok(())
-        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
