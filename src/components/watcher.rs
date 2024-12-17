@@ -101,13 +101,13 @@ pub fn Watcher() -> impl IntoView {
         })
     };
 
-    // Effect::new(move |_| {
-    //     logging::log!("yeah async");
-    //     let cloned_blocks = blocks();
-    //     spawn_local(async move {
-    //         update_block_data(&cloned_blocks).await;
-    //     });
-    // });
+    Effect::new(move |_| {
+        logging::log!("yeah async");
+        let cloned_blocks = blocks();
+        spawn_local(async move {
+            update_block_data(&cloned_blocks).await;
+        });
+    });
 
     let log = move || {
         format!(
@@ -181,7 +181,7 @@ fn BlockElement(block: Block) -> impl IntoView {
     mview! {
         div class="card" {
             div class="card-body flex flex-row" {
-                h2({block.name})
+                h2 class="card-title" ({block.name})
 
                 div class="dropdown dropdown-top" {
                     div tabindex="0" role="button" class="btn" {
