@@ -64,14 +64,14 @@ pub fn Watcher() -> impl IntoView {
 
     mview! {
         div class="join flex m-5" {
-            RadioOption value={WatcherRoute::Blacklist} set_signal={set_route} route={route} btn_size=""()
-            RadioOption value={WatcherRoute::Whitelist} set_signal={set_route} route={route} btn_size=""()
+            RadioOption value={WatcherRoute::Blacklist} set_signal={set_route} route={route} btn_size="" name="list"()
+            RadioOption value={WatcherRoute::Whitelist} set_signal={set_route} route={route} btn_size="" name="list"()
         }
 
         div class="join flex m-5" {
-            RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
-            RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
-            RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm"()
+            RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+            RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+            RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
         }
 
         p({move || log()})
@@ -89,33 +89,35 @@ fn RadioOption<T>(
     set_signal: WriteSignal<T>,
     route: ReadSignal<T>,
     btn_size: &'static str,
+    name: &'static str,
 ) -> impl IntoView
 where
     T: Clone + Copy + PartialEq + Display + 'static,
 {
     mview! {
-        input class={move || format!("btn {} join-item flex-1 rounded-l-lg", btn_size)} on:click={move |_| set_signal(value)} type="radio" name="watcherRoute" aria-label={move || value.to_string()} checked={move || route() == value}()
+        input
+            class={move || format!("btn {} join-item flex-1 rounded-l-lg", btn_size)}
+            on:click={move |_| set_signal(value)}
+            type="radio"
+            name={name}
+            aria-label={value.to_string()}
+            checked={move || route() == value}()
     }
 }
 
-//
-// #[component]
-// fn BlockElement(block: Block) -> impl IntoView {
-//     mview! {
-//         div class="card" {
-//             div class="card-body flex flex-row" {
-//                 h2({move || match block.clone() {
-//                     Block::App(data) => data.app_name,
-//                     Block::Website(data) => data.url,
-//                     Block::Keyword(data) => data.name,
-//                 }})
-//
-//                 div class="dropdown dropdown-top" {
-//                     div tabindex="0" role="button" class="btn" {
-//
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
+#[component]
+fn BlockElement(block: Block) -> impl IntoView {
+    mview! {
+        div class="card" {
+            div class="card-body flex flex-row" {
+                h2({block.name})
+
+                div class="dropdown dropdown-top" {
+                    div tabindex="0" role="button" class="btn" {
+
+                    }
+                }
+            }
+        }
+    }
+}

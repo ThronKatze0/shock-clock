@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Block {
-    id: usize,
-    name: String,
+    pub id: usize,
+    pub name: String,
     shock_strength: ShockStrength,
     block_type: BlockType,
 }
