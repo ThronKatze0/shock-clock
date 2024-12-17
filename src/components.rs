@@ -1,6 +1,8 @@
+use leptos::ev::MouseEvent;
 use leptos::logging;
 use leptos::on_cleanup;
 use leptos::set_interval_with_handle;
+use leptos::view;
 use leptos::Signal;
 use leptos::WriteSignal;
 use shock_clock_utils::ble::IsConnected;
@@ -97,21 +99,23 @@ pub fn Home() -> impl IntoView {
                     div class="flex-1";
                 }
                 div class="flex-1 form-control" {
-                    label class="label cursor-pointer" {
-                        span class="label-text" { "Block Social Media" }
-                        input type="checkbox" class="toggle";
-                    }
-                    label class="label cursor-pointer" {
-                        span class="label-text" { "Block Shorts" }
-                        input type="checkbox" class="toggle";
-                    }
-                    label class="label cursor-pointer" {
-                        span class="label-text" { "Block Adult Content" }
-                        input type="checkbox" class="toggle";
-                    }
+                    Toggle label="Block Social Media" callback={move |_| {}};
+                    Toggle label="Block Shorts" callback={move |_| {}};
+                    Toggle label="Block Adult Content" callback={move |_| {}};
                 }
             }
         }
+    }
+}
+
+#[component]
+fn Toggle(label: &'static str, callback: impl Fn(MouseEvent) -> () + 'static) -> impl IntoView {
+    view! { // need to use view! bc other stupid macro can't understand that label param is supposed to
+        // be a child
+        <label class="mx-4 label cursor-pointer">
+            <span class="label-text text-lg">{label}</span>
+            <input type="checkbox" class="toggle toggle-lg" on:click={callback}/>
+        </label>
     }
 }
 
