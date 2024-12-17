@@ -42,6 +42,11 @@ void shockActivated(BLEDevice central, BLECharacteristic characteristic) {
   characteristic.writeValue((unsigned short)0);
 }
 
+void phoneConnected(BLEDevice phone) {
+  Serial.println("Phone connected: ");
+  Serial.println(phone.address());
+}
+
 void setup() {
   pinMode(SHOCK_PIN, OUTPUT);
   pinMode(3, INPUT);
@@ -64,17 +69,12 @@ void setup() {
   shock_service.addCharacteristic(cooldown);
   BLE.addService(shock_service);
 
+  BLE.setConnectionInterval(0, -1);
   if (!BLE.advertise()) {
     Serial.println("BLE advertise fail");
     for (;;);
   }
 }
-
-void phoneConnected(BLEDevice phone) {
-  Serial.println("Phone connected: ");
-  Serial.println(phone.address());
-}
-
 void loop() {
   // put your main code here, to run repeatedly:
   if (digitalRead(3) == HIGH) {
