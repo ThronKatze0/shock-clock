@@ -1,15 +1,16 @@
 use serde::{Deserialize, Serialize};
+use uuid;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Block {
-    id: usize,
-    name: String,
-    shock_strength: ShockStrength,
-    block_type: BlockType,
+    pub uuid: uuid::Uuid,
+    pub name: String,
+    pub shock_strength: ShockStrength,
+    pub block_type: BlockType,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-enum BlockType {
+pub enum BlockType {
     App(AppBlockData),
     Website(WebsiteBlockData),
     Keyword(KeywordBlockData),

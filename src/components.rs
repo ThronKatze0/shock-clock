@@ -62,15 +62,15 @@ pub fn Home() -> impl IntoView {
         })());
     };
     let (clock_stat, set_clock_stat) = create_signal(false);
-    let handle = set_interval_with_handle(
-        move || {
-            spawn_local(update_clock_stat(set_clock_stat));
-        },
-        Duration::from_secs(5),
-    );
-    on_cleanup(move || {
-        drop(handle);
-    });
+    // let handle = set_interval_with_handle(
+    //     move || {
+    //         spawn_local(update_clock_stat(set_clock_stat));
+    //     },
+    //     Duration::from_secs(5),
+    // );
+    // on_cleanup(move || {
+    //     drop(handle);
+    // });
     let get_icon = move || {
         if clock_stat() {
             i::AiCheckOutlined

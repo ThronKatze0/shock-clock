@@ -9,6 +9,7 @@ pub fn update_blocklist(
     blocks: Vec<Block>,
 ) {
     // verrrry inefficient *purr*
+    println!("yeah state");
     let mut lock = state.lock().unwrap();
     lock.clear();
     blocks.into_iter().for_each(|block| lock.push(block));

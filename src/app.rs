@@ -36,7 +36,7 @@ struct Route(RwSignal<SelectedRoute>);
 
 #[component]
 pub fn App() -> impl IntoView {
-    let selected_route = RwSignal::new(SelectedRoute::Home);
+    let selected_route = RwSignal::new(SelectedRoute::Watcher);
     provide_context(Route(selected_route));
 
     mview! {
