@@ -101,6 +101,31 @@ pub fn Watcher() -> impl IntoView {
         })
     };
 
+    add_block(Block {
+        uuid: uuid::Uuid::new_v4(),
+        name: "Tiktok".to_string(),
+        shock_strength: ShockStrength::Normal,
+        block_type: BlockType::App(AppBlockData {
+            package_name: "com.musically.smth".to_string(),
+        }),
+    });
+    add_block(Block {
+        uuid: uuid::Uuid::new_v4(),
+        name: "Marp".to_string(),
+        shock_strength: ShockStrength::Normal,
+        block_type: BlockType::App(AppBlockData {
+            package_name: "com.musically.smth".to_string(),
+        }),
+    });
+    add_block(Block {
+        uuid: uuid::Uuid::new_v4(),
+        name: "Halil".to_string(),
+        shock_strength: ShockStrength::Normal,
+        block_type: BlockType::App(AppBlockData {
+            package_name: "com.musically.smth".to_string(),
+        }),
+    });
+
     // Effect::new(move |_| {
     //     logging::log!("yeah async");
     //     let cloned_blocks = blocks();
@@ -179,9 +204,9 @@ where
 #[component]
 fn BlockElement(block: Block) -> impl IntoView {
     mview! {
-        div class="card bg-neutral w-full shadow-xl m-3" {
+        div class="card bg-neutral shadow-xl mx-5 mt-3" {
             div class="card-body flex flex-row" {
-                h2 class="card-title"("Card Title")
+                h2 class="card-title"({block.name})
                 div class="card-actions justify-end" {
                     button class="btn btn-primary" ("Buy now")
                 }
