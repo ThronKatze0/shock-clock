@@ -17,6 +17,7 @@ leptos_icons = "0.3.1"
 icondata = "0.4.0"
 icondata_core = "0.1.0"
 shock-clock-utils = {path = "./shock-clock-utils"}
+uuid = {version= "1.11.0", features = ["v4", "serde"]}
 
 [workspace]
 members = [ "shock-clock-utils","src-tauri"]

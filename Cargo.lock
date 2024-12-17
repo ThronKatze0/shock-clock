@@ -4093,6 +4093,7 @@ dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "shock-clock-utils",
+ "uuid",
  "wasm-bindgen",
  "wasm-bindgen-futures",
 ]
@@ -4102,6 +4103,7 @@ name = "shock-clock-utils"
 version = "0.1.0"
 dependencies = [
  "serde",
+ "uuid",
 ]
 
 [[package]]
