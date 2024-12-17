@@ -45,7 +45,7 @@ pub fn App() -> impl IntoView {
             SelectedRoute::Watcher => mview! {Watcher()},
             SelectedRoute::Games => mview! {Games()}
         }}
-        div class="btm-nav btm-nav-sm h-[10%]" {
+        div class="btm-nav btm-nav-sm fixed bottom-0 h-[70px]" {
             BtmNavItem route={SelectedRoute::Watcher} icon={i::AiMonitorOutlined}()
             BtmNavItem route={SelectedRoute::Home} icon={i::AiHomeOutlined}()
             BtmNavItem route={SelectedRoute::Games} icon={i::CgGames}()

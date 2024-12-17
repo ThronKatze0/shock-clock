@@ -3,6 +3,7 @@ use leptos::SignalUpdate;
 use shock_clock_utils::AppBlockData;
 use shock_clock_utils::BlockType;
 use shock_clock_utils::ShockStrength;
+use shock_clock_utils::WebsiteBlockData;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::fmt::Formatter;
@@ -111,19 +112,17 @@ pub fn Watcher() -> impl IntoView {
     });
     add_block(Block {
         uuid: uuid::Uuid::new_v4(),
-        name: "Marp".to_string(),
+        name: "Google".to_string(),
         shock_strength: ShockStrength::Normal,
-        block_type: BlockType::App(AppBlockData {
-            package_name: "com.musically.smth".to_string(),
+        block_type: BlockType::Website(WebsiteBlockData {
+            url: "www.google.com".to_string(),
         }),
     });
     add_block(Block {
         uuid: uuid::Uuid::new_v4(),
         name: "Halil".to_string(),
         shock_strength: ShockStrength::Normal,
-        block_type: BlockType::App(AppBlockData {
-            package_name: "com.musically.smth".to_string(),
-        }),
+        block_type: BlockType::Keyword,
     });
 
     // Effect::new(move |_| {
@@ -143,17 +142,18 @@ pub fn Watcher() -> impl IntoView {
     };
 
     mview! {
-        div class="join flex m-5" {
-            RadioOption value={WatcherRoute::Blacklist} set_signal={set_route} route={route} btn_size="" name="list"()
-            RadioOption value={WatcherRoute::Whitelist} set_signal={set_route} route={route} btn_size="" name="list"()
-        }
+        div class="sticky top-0 z-50 bg-base-100 pb-3 pt-3" {
+            div class="join flex mx-5" {
+                RadioOption value={WatcherRoute::Blacklist} set_signal={set_route} route={route} btn_size="" name="list"()
+                RadioOption value={WatcherRoute::Whitelist} set_signal={set_route} route={route} btn_size="" name="list"()
+            }
 
-        div class="join flex m-5" {
-            RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
-            RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
-            RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+            div class="join flex mx-5 mt-3" {
+                RadioOption value={BlockTypeRoute::App} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+                RadioOption value={BlockTypeRoute::Website} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+                RadioOption value={BlockTypeRoute::Keyword} set_signal={set_block_type} route={block_type} btn_size="btn-sm" name="blockType"()
+            }
         }
-
         p({move || log()})
 
         button on:click={move |_| {
@@ -167,13 +167,15 @@ pub fn Watcher() -> impl IntoView {
             });
         }}("Add smth")
 
-        div class="flex flex-col" {
-            For
-                each={move || blocks.get()}
-                key={|block| block.uuid}
-                children={move |block| mview! {
-                    BlockElement {block}()
-                }}()
+        div class="overflow-y-auto pb-20" {
+            ul class="divide-y divide-gray-200" {
+                For
+                    each={move || blocks.get()}
+                    key={|block| block.uuid}
+                    children={move |block| mview! {
+                        BlockElement {block}()
+                    }}()
+            }
         }
 
     }
@@ -201,15 +203,39 @@ where
     }
 }
 
+// #[component]
+// fn BlockElement(block: Block) -> impl IntoView {
+//     mview! {
+//         div class="card bg-neutral shadow-xl mx-5 mt-3" {
+//             div class="card-body" {
+//                 div class="flex flex-row text-4xl" {
+//                     h2 class="card-title text-4xl"({block.name})
+//                     {match &block.block_type {
+//                         BlockType::App(_) => mview!{ Icon width="3em" height="2em" icon={i::AiAppstoreOutlined}() },
+//                         BlockType::Website(_) => mview!{ Icon width="3em" height="2em" icon={i::MdiWeb}() },
+//                         BlockType::Keyword => mview!{ Icon width="3em" height="2em" icon={i::BsCardText}() }
+//                     }}
+//                 }
+//                 p {{move || match &block.block_type {
+//                         BlockType::App(ref app_data) => app_data.package_name.clone(),
+//                         BlockType::Website(ref website_data) => website_data.url.clone(),
+//                         _ => "".to_string()
+//                     }}}
+//                 div class="card-actions justify-end" {
+//                     button class="btn btn-primary" ("Buy now")
+//                 }
+//             }
+//         }
+//     }
+// }
+//
 #[component]
 fn BlockElement(block: Block) -> impl IntoView {
     mview! {
-        div class="card bg-neutral shadow-xl mx-5 mt-3" {
-            div class="card-body flex flex-row" {
-                h2 class="card-title"({block.name})
-                div class="card-actions justify-end" {
-                    button class="btn btn-primary" ("Buy now")
-                }
+        li class="flex items-center justify-between p-4" {
+            div class="flex items-center space-x-3" {
+                Icon width="3em" height="2em" icon={i::AiAppstoreOutlined}()
+                span class="text-primary font-medium"({block.name})
             }
         }
     }
