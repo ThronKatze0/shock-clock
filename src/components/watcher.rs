@@ -128,6 +128,10 @@ pub fn Watcher() -> impl IntoView {
         })
     };
 
+    let (select_modal_is_open, set_select_modal_is_open) = create_signal(false);
+    let (add_modal_is_open, set_add_modal_is_open) = create_signal(false);
+    let (add_modal_block_type, set_add_modal_block_type) = create_signal(BlockAdd::App);
+
     add_block(Block {
         uuid: uuid::Uuid::new_v4(),
         name: "Tiktok".to_string(),
@@ -146,7 +150,7 @@ pub fn Watcher() -> impl IntoView {
     });
     add_block(Block {
         uuid: uuid::Uuid::new_v4(),
-        name: "Halil".to_string(),
+        name: "Videos".to_string(),
         shock_strength: ShockStrength::Normal,
         block_type: BlockType::Keyword,
     });
@@ -205,7 +209,17 @@ pub fn Watcher() -> impl IntoView {
             }
         }
 
+        button class="btn btn-primary" on:click={move |_| set_select_modal_is_open(true)}()
+        BlockTypeSelectModal set_block_add_type={set_add_modal_block_type} is_open={select_modal_is_open} set_is_open={set_select_modal_is_open} set_add_modal_open={set_add_modal_is_open}()
+        BlockAddModal block_add_type={add_modal_block_type} is_open={add_modal_is_open} set_is_open={set_add_modal_is_open}()
     }
+}
+
+#[derive(Clone)]
+enum BlockAdd {
+    App,
+    Website,
+    Keyword,
 }
 
 #[component]
@@ -249,8 +263,68 @@ fn BlockElement(block: Block) -> impl IntoView {
                     }})
                 }
             }
-            button class="btn btn-secondary" {
+            button class="btn btn-warning" {
+                Icon width="2em" height="2em" icon={i::BsLightningCharge}()
+            }
+            button class="btn btn-error" {
                 Icon width="2em" height="2em" icon={i::BsTrash}()
+            }
+        }
+    }
+}
+
+#[component]
+fn BlockTypeSelectModal(
+    set_block_add_type: WriteSignal<BlockAdd>,
+    is_open: ReadSignal<bool>,
+    set_is_open: WriteSignal<bool>,
+    set_add_modal_open: WriteSignal<bool>,
+) -> impl IntoView {
+    mview! {
+        dialog class={move || format!("modal {}", if is_open() {"modal-open"} else {""})} {
+            div class="modal-box flex flex-col" {
+                button class="btn btn-md btn-circle btn-ghost absolute right-2 top-2" on:click={move |_| set_is_open(false)}("X")
+                button class="btn btn-secondary btn-outline mt-8" on:click={move |_| {
+                    set_is_open(false);
+                    set_block_add_type(BlockAdd::App);
+                    set_add_modal_open(true);
+                }} ("App")
+                button class="btn btn-secondary btn-outline mt-2" on:click={move |_| {
+                    set_is_open(false);
+                    set_block_add_type(BlockAdd::Website);
+                    set_add_modal_open(true);
+                }} ("Website")
+                button class="btn btn-secondary btn-outline mt-2"  on:click={move |_| {
+                    set_is_open(false);
+                    set_block_add_type(BlockAdd::Keyword);
+                    set_add_modal_open(true);
+                }} ("Keyword")
+            }
+        }
+    }
+}
+
+#[component]
+fn BlockAddModal(
+    block_add_type: ReadSignal<BlockAdd>,
+    is_open: ReadSignal<bool>,
+    set_is_open: WriteSignal<bool>,
+) -> impl IntoView {
+    mview! {
+        dialog class={move || format!("modal {}", if is_open() {"modal-open"} else {""})} {
+            div class="modal-box" {
+                button class="btn btn-md btn-circle btn-ghost absolute right-2 top-2" on:click={move |_| set_is_open(false)}("X")
+                {move || match block_add_type.get() {
+                    BlockAdd::App => mview! {
+                        h2 ("Block an App")
+                    },
+                    BlockAdd::Website => mview! {
+                        h2 ("Block a Website")
+                    },
+                    BlockAdd::Keyword => mview! {
+                        h2 ("Block a Keyword")
+                    }
+                }}
             }
         }
     }

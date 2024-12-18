@@ -9,6 +9,9 @@
     "beforeBuildCommand": "trunk build",
     "frontendDist": "../dist"
   },
+  "plugins": {
+    "tauri-plugin-accessibility": {}
+  },
   "app": {
     "withGlobalTauri": true,
     "windows": [

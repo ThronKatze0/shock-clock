@@ -15,6 +15,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_blec::init())
+        // .plugin(tauri_plugin_accessibility::init())
         .manage(Mutex::new(Vec::<shock_clock_utils::Block>::new()))
         // .manage(Mutex::new(Option::<String>::None))
         .invoke_handler(tauri::generate_handler![
